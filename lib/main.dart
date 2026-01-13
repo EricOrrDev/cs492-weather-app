@@ -31,13 +31,22 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  
+  List<Forecast> _forecasts = [];
+  List<Widget> _forecastsWidget = [];
+
   @override
   void initState() {
     super.initState();
-    getForecastsByLocation(44.058, -121.315);
+    _initForecasts();
   }
 
+  void _initForecasts() async {
+    List<Forecast> forecasts = await getForecastsByLocation(44.058, -121.315);
+    setState(() {
+      _forecasts = forecasts;
+      _forecastsWidget = _forecasts.map((e) => Text(e.name)).toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +55,11 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Text("Hello World"),
+      body: Center(
+        child: Column(
+          children: _forecastsWidget,
+        ),
+      ),
     );
   }
 }
