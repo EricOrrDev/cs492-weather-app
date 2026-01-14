@@ -44,8 +44,16 @@ class _MyHomePageState extends State<MyHomePage> {
     List<Forecast> forecasts = await getForecastsByLocation(44.058, -121.315);
     setState(() {
       _forecasts = forecasts;
-      _forecastsWidget = _forecasts.map((e) => Text(e.name)).toList();
+      // Instead of just mapping the e.name, try to create a widget that shows all properties
+      _forecastsWidget =
+          _forecasts.map((forecast) => buildForecastWidget(forecast)).toList();
     });
+  }
+
+  Widget buildForecastWidget(Forecast forecast) {
+    return Center(
+      child: ForecastCard(forecast: forecast),
+    );
   }
 
   @override
@@ -55,9 +63,59 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Center(
+      body: SingleChildScrollView(
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children:
+                  _forecastsWidget)), //credit to chatGPT for this line, idk why a normal scrollview in wrong
+    );
+  }
+}
+
+class ForecastCard extends StatelessWidget {
+  final Forecast forecast;
+
+  const ForecastCard({
+    super.key,
+    required this.forecast,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Card(
+      elevation: 4,
+      margin: const EdgeInsets.all(12),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
         child: Column(
-          children: _forecastsWidget,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              forecast.name,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '${forecast.temperature}°',
+              style: theme.textTheme.displaySmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              forecast.shortForecast,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: Colors.grey[700],
+              ),
+            ),
+          ],
         ),
       ),
     );

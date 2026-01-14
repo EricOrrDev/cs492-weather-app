@@ -35,10 +35,11 @@ Future<List<Forecast>> getForecastsByLocation(double lat, double long) async {
   final Map<String, dynamic> forecastDetailJson =
       jsonDecode(forecastDetailResponse.body);
 
-  final List<dynamic> periods = forecastDetailJson["properties"]["periods"];
   List<Forecast> forecasts = [];
 
-  for (int i = 0; i < forecastDetailJson["properties"]["periods"].length; i++) {
+  List<dynamic> periods = forecastDetailJson["properties"]["periods"];
+
+  for (int i = 0; i < periods.length; i++) {
     Map<String, dynamic> f = periods[i];
     forecasts.add(Forecast(
         temperature: f["temperature"],
