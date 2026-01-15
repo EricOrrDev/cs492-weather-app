@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import './models/forecast.dart';
 
-import './models/location.dart';  
+import './models/location.dart';
 
 // TODO:
 // Add text field and elevated button
@@ -39,6 +39,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<Forecast> _forecasts = [];
   Location? _location;
+  String? _locationString;
 
   @override
   void initState() {
@@ -47,16 +48,21 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _initForecasts() async {
-    
-
     Location location = await getLocationFromString("Miami");
 
-    List<Forecast> forecasts = await getForecastsByLocation(location.latitude, location.longitude);
-    
+    List<Forecast> forecasts =
+        await getForecastsByLocation(location.latitude, location.longitude);
+
     setState(() {
       _location = location;
       _forecasts = forecasts;
     });
+  }
+
+  void _changeLocation(String s) async {}
+
+  void _changeLocationString(String s) {
+
   }
 
   @override
@@ -66,17 +72,31 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: 
+      body: Column(
+        children: [
+          Column(
+            children: [
+              ElevatedButton(
+                  onPressed: _changeLocation(), child: Text("Change Location")),
+              TextField( onSubmitted: ,)
+            ],
+          ),
           SizedBox(
             width: 500,
             child: Column(
               children: [
-                Text(_location != null ? "${_location?.city}, ${_location?.state} ${_location?.zip}" : "No Location..."),
-                Row(children: _forecasts.map((forecast)=> ForecastWidget(forecast: forecast)).toList()),
+                Text(_location != null
+                    ? "${_location?.city}, ${_location?.state} ${_location?.zip}"
+                    : "No Location..."),
+                Row(
+                    children: _forecasts
+                        .map((forecast) => ForecastWidget(forecast: forecast))
+                        .toList()),
               ],
             ),
           ),
-      
+        ],
+      ),
     );
   }
 }
@@ -102,5 +122,26 @@ class ForecastWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class LocationState extends StatefulWidget{
+  const LocationState({super.key});
+
+  @override
+  State<LocationState> createState => _LocationState();
+}
+class _LocationState extends State<LocationState>{
+  final locationController = TextEditingController();
+
+  @override
+  dispose() {
+    locationController.dispose();
+    super.dispose();
+  }
+
+  @override 
+  Widget build(BuildContext context){
+
   }
 }
