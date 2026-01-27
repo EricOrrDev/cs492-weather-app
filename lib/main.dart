@@ -53,9 +53,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _tabController.index = 1;
+    _tabController.addListener(() {
+      if (_location == null) {
+        _tabController.index = 1;
+      }
+    });
   }
 
-  void _setActiveForecast(Forecast forecast) {
+  void _setActiveForecast(Forecast? forecast) {
     setState(() {
       _activeForecast = forecast;
     });
@@ -70,7 +75,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
   void _setLocation(String locationString) async {
-    Location? location = await getLocationFromString(locationString);
+    Location? location;
+    if (locationString != "") {
+      location = await getLocationFromString(locationString);
+    }
+
     _getForecasts(location);
     setState(() {
       _location = location;
@@ -95,7 +104,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text(widget.title),
           actions: [
-            Text(_location != null ? "${_location?.city}, ${_location?.state}" : ""),
+            Text(_location != null
+                ? "${_location?.city}, ${_location?.state}"
+                : ""),
           ],
           bottom: TabBar(controller: _tabController, tabs: [
             Tab(icon: Icon(Icons.sunny_snowing)),
@@ -114,10 +125,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 activeForecast: _activeForecast,
                 setActiveForecast: _setActiveForecast),
             LocationWidget(
-              location: _location,
-              setLocation: _setLocation,
-              setLocationFromGps: _setLocationFromGps,
-            ),
+                location: _location,
+                setLocation: _setLocation,
+                setLocationFromGps: _setLocationFromGps),
           ],
         ),
       ),
