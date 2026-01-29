@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:weatherapp/models/forecast.dart';
+import 'package:weatherapp/providers/forecast_provider.dart';
 import 'package:weatherapp/widgets/detailed_forecast.dart';
 import 'package:weatherapp/widgets/forecasts.dart';
-
 
 class ForecastWidget extends StatelessWidget {
   const ForecastWidget({
     super.key,
-    required List<Forecast> forecasts,
-    required Forecast? activeForecast,
-    required this.setActiveForecast,
-  })  : _forecasts = forecasts,
-        _activeForecast = activeForecast;
+    required ForecastProvider forecastProvider,
+  }) : _forecastProvider = forecastProvider;
 
-  final List<Forecast> _forecasts;
-  final Forecast? _activeForecast;
-  final void Function(Forecast) setActiveForecast;
+  final ForecastProvider _forecastProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +20,11 @@ class ForecastWidget extends StatelessWidget {
           width: double.infinity,
           height: 200,
           child: ForecastsWidget(
-            forecasts: _forecasts,
-            setActiveForecast: setActiveForecast,
+            forecasts: _forecastProvider.forecasts,
+            setActiveForecast: _forecastProvider.setActiveForecast,
           ),
         ),
-        DetailedForecast(activeForecast: _activeForecast)
+        DetailedForecast(activeForecast: _forecastProvider.activeForecast)
       ],
     );
   }

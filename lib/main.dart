@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:weatherapp/providers/forecast_provider.dart';
 import 'package:weatherapp/providers/location_provider.dart';
 import 'package:weatherapp/widgets/forecast.dart';
 import './models/forecast.dart';
@@ -42,11 +43,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
-  List<Forecast> _forecasts = [];
-  Forecast? _activeForecast;
-  // Location? _location;
   late final TabController _tabController;
   final LocationProvider _locationProvider = LocationProvider();
+  final ForecastProvider _forecastProvider = ForecastProvider();
 
   @override
   void initState() {
@@ -65,18 +64,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   void _setActiveForecast(Forecast forecast) {
     setState(() {
-      _activeForecast = forecast;
+      _forecastProvider.activeForecast = forecast;
     });
   }
 
   void _getForecasts(Location? location) async {
     if (location != null) {
-      List<Forecast> forecasts =
+      _forecastProvider.forecasts =
           await getForecastsByLocation(location.latitude, location.longitude);
-      setState(() {
-        _forecasts = forecasts;
-        _activeForecast = _forecasts[0];
-      });
     }
   }
 
@@ -111,10 +106,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         child: TabBarView(
           controller: _tabController,
           children: [
-            ForecastWidget(
-                forecasts: _forecasts,
-                activeForecast: _activeForecast,
-                setActiveForecast: _setActiveForecast),
+            ForecastWidget(forecastProvider: _forecastProvider),
             LocationWidget(locationProvider: _locationProvider),
           ],
         ),
