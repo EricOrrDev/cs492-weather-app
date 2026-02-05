@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+<<<<<<< HEAD
+=======
+
+>>>>>>> 76da1f959dc4fb4c5b0090a7cbc338e8bb94f926
 import 'package:weatherapp/providers/forecast_provider.dart';
 import 'package:weatherapp/providers/location_provider.dart';
-import 'package:weatherapp/widgets/forecast.dart';
-import './models/forecast.dart';
-import './models/location.dart';
-import './widgets/location.dart';
-
-// TODOs
-// Implement global state management for Location and Forecast using ChangeProvider
-
-// TODO:
-// Update the location widget, so that you no longer need to pass the location or set functions
+import 'package:weatherapp/widgets/weather_app_bar.dart';
+import 'package:weatherapp/widgets/weather_body.dart';
 
 void main() {
-  runApp(ChangeNotifierProvider(
-      create: (context) => LocationProvider(), child: const MyApp()));
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (context) => LocationProvider()),
+    ChangeNotifierProvider(create: (context) => ForecastProvider())
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -44,8 +42,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   late final TabController _tabController;
+<<<<<<< HEAD
   final LocationProvider _locationProvider = LocationProvider();
   final ForecastProvider _forecastProvider = ForecastProvider();
+=======
+  bool locationSet = false;
+>>>>>>> 76da1f959dc4fb4c5b0090a7cbc338e8bb94f926
 
   @override
   void initState() {
@@ -53,15 +55,13 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     _tabController = TabController(length: 2, vsync: this);
     _tabController.index = 1;
     _tabController.addListener(() {
-      if (_locationProvider.location == null) {
-        _tabController.index = 1;
+      if (!locationSet) {
+        _tabController.animateTo(1);
       }
-    });
-    _locationProvider.addListener(() {
-      _getForecasts(_locationProvider.location);
     });
   }
 
+<<<<<<< HEAD
   void _setActiveForecast(Forecast forecast) {
     setState(() {
       _forecastProvider.activeForecast = forecast;
@@ -72,12 +72,29 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     if (location != null) {
       _forecastProvider.forecasts =
           await getForecastsByLocation(location.latitude, location.longitude);
+=======
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final locationProvider = context.read<LocationProvider>();
+    final forecastProvider = context.read<ForecastProvider>();
+
+    if (locationProvider.location != null) {
+      locationSet = true;
+      forecastProvider.getForecasts(locationProvider.location);
+    } else {
+      locationSet = false;
+>>>>>>> 76da1f959dc4fb4c5b0090a7cbc338e8bb94f926
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final locationProvider = context.watch<LocationProvider>();
+
     return Scaffold(
+<<<<<<< HEAD
       appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text(widget.title),
@@ -111,6 +128,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           ],
         ),
       ),
+=======
+      appBar: WeatherAppBar(title: widget.title, locationProvider: locationProvider, tabController: _tabController),
+      body: WeatherAppBody(tabController: _tabController),
+>>>>>>> 76da1f959dc4fb4c5b0090a7cbc338e8bb94f926
     );
   }
 }
