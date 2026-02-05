@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:weatherapp/providers/forecast_provider.dart';
 
-import '../models/forecast.dart';
+import '../../models/forecast.dart';
 
 class ForecastTileWidget extends StatelessWidget {
   const ForecastTileWidget({super.key, required this.forecast});
