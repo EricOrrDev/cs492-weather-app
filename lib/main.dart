@@ -13,12 +13,12 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 // https://api.flutter.dev/flutter/widgets/Semantics-class.html
 
 void main() async {
-    WidgetsFlutterBinding.ensureInitialized(); // Ensure Flutter is initialized
-    try {
-      await dotenv.load(fileName: ".env"); // Load environment variables
-    } catch (e) {
-      throw Exception('Error loading .env file: $e'); // Print error if any
-    }
+  WidgetsFlutterBinding.ensureInitialized(); // Ensure Flutter is initialized
+  try {
+    await dotenv.load(fileName: ".env"); // Load environment variables
+  } catch (e) {
+    throw Exception('Error loading .env file: $e'); // Print error if any
+  }
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => LocationProvider()),
     ChangeNotifierProvider(create: (context) => ForecastProvider()),
@@ -33,12 +33,15 @@ class MyApp extends StatelessWidget {
     final themeProvider = context.watch<ThemeProvider>();
     return MaterialApp(
       title: 'CS492',
+      showSemanticsDebugger: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.amber, brightness: Brightness.light),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.amber, brightness: Brightness.light),
         useMaterial3: true,
       ),
       darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.amber, brightness: Brightness.dark),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.amber, brightness: Brightness.dark),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'CS492'),

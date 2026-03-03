@@ -15,7 +15,7 @@ class ForecastWidget extends StatelessWidget {
           height: 200,
           child: ForecastsWidget(),
         ),
-        DetailedForecast()
+        ExcludeSemantics(child: DetailedForecast())
       ],
     );
   }
