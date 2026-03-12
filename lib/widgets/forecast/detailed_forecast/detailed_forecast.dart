@@ -1,11 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:weatherapp/models/forecast.dart';
+import 'package:weatherapp/models/pexels_image.dart';
 import 'package:weatherapp/providers/forecast_provider.dart';
+import 'package:weatherapp/providers/theme_provider.dart';
+import 'package:weatherapp/widgets/forecast/detailed_forecast/detailed_forecast_text.dart';
 
 class DetailedForecast extends StatefulWidget {
   const DetailedForecast({super.key});
@@ -17,6 +16,7 @@ class DetailedForecast extends StatefulWidget {
 class _DetailedForecastState extends State<DetailedForecast> {
   String? _imageUrl;
   Forecast? _lastForecast;
+  PexelsImage pexelsImage = PexelsImage();
 
   @override
   void didChangeDependencies() {
@@ -35,7 +35,7 @@ class _DetailedForecastState extends State<DetailedForecast> {
 
     String prompt = "$day ${forecast.shortForecast}".trim();
 
-    final imageUrl = await _getImage(prompt);
+    final imageUrl = await pexelsImage.getImage(prompt);
 
     if (!mounted) return;
 
@@ -44,42 +44,18 @@ class _DetailedForecastState extends State<DetailedForecast> {
     });
   }
 
-  Future<String?> _getImage(String prompt) async {
-    final apiKey = dotenv.env['PEXELS_API_KEY'];
-    if (apiKey == null) return null;
-
-    final uri = Uri.parse(
-      'https://api.pexels.com/v1/search?query=${Uri.encodeComponent(prompt)}&per_page=1',
-    );
-
-    final response = await http.get(
-      uri,
-      headers: {
-        'Authorization': apiKey,
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      if (data['photos'] != null && data['photos'].isNotEmpty) {
-        return data['photos'][0]['src']['large'];
-      }
-    }
-
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
     final activeForecast = context.watch<ForecastProvider>().activeForecast;
+    final themeProvider = context.read<ThemeProvider>();
 
     if (activeForecast == null) {
-      return const SizedBox(
+      return SizedBox(
         height: 300,
         child: Center(
           child: Text(
             'Select a forecast to see details',
-            style: TextStyle(color: Colors.grey),
+            style: TextStyle(color: themeProvider.grey),
           ),
         ),
       );
@@ -112,36 +88,7 @@ class _DetailedForecastState extends State<DetailedForecast> {
                   color: Colors.black.withValues(alpha: 0.5),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      activeForecast.name,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: Divider(color: Colors.white70),
-                    ),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Text(
-                          activeForecast.detailedForecast,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                height: 1.4,
-                                color: Colors.white,
-                              ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              DetailedForecastText(activeForecast: activeForecast),
               if (_imageUrl == null)
                 const Center(
                   child: CircularProgressIndicator(color: Colors.white),
