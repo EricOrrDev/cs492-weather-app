@@ -13,13 +13,15 @@ class ForecastTileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final semanticsString = "${forecast.name}, ${forecast.detailedForecast}";
     final theme = Theme.of(context);
 
     final accentColor = forecast.isDaytime ? Colors.orange : Colors.indigo;
 
+    final semanticsString =
+        "${forecast.name}, ${forecast.shortForecast}, ${forecast.detailedForecast}";
+
     return Semantics(
-      label: "${semanticsString}",
+      label: semanticsString,
       child: InkWell(
         onTap: () {
           context.read<ForecastProvider>().setActiveForecast(forecast);
@@ -44,9 +46,9 @@ class ForecastTileWidget extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: ExcludeSemantics(
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: ExcludeSemantics(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -59,9 +61,8 @@ class ForecastTileWidget extends StatelessWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          ExcludeSemantics(
-                              child: SvgPicture.asset(forecast.imagePath,
-                                  semanticsLabel: forecast.shortForecast)),
+                          SvgPicture.asset(forecast.imagePath,
+                              semanticsLabel: forecast.shortForecast),
                           Text(
                             "${forecast.temperature}°",
                             style: theme.textTheme.displaySmall?.copyWith(

@@ -27,7 +27,7 @@ class WeatherAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Text(title),
       actions: [
         Semantics(
-          label: 'Dark Mode Toggle',
+          label: 'Dark Mode Switch',
           checked: themeProvider.darkMode,
           child: Switch(
               value: themeProvider.darkMode,
@@ -46,12 +46,10 @@ class WeatherAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
       ],
       bottom: TabBar(controller: _tabController, tabs: [
-        Tab(
-            icon: Semantics(
-                label: "Weather Tab", child: const Icon(Icons.sunny_snowing))),
-        Tab(
-            icon: Semantics(
-                label: "Location Tab", child: const Icon(Icons.location_pin))),
+        Semantics(
+            label: "Forecasts Tab", child: Tab(icon: Icon(Icons.sunny_snowing))),
+        Semantics(
+            label: "Location Tab", child: Tab(icon: Icon(Icons.location_pin))),
       ]),
     );
   }
