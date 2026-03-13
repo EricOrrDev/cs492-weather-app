@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:weatherapp/providers/forecast_provider.dart';
 import 'package:weatherapp/providers/location_provider.dart';
 import 'package:weatherapp/providers/theme_provider.dart';
+import 'package:weatherapp/widgets/drawer/drawer.dart';
 import 'package:weatherapp/widgets/weather_ui/weather_app_bar.dart';
 import 'package:weatherapp/widgets/weather_ui/weather_body.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Ensure Flutter is initialized
@@ -55,8 +56,7 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
-  late final TabController _tabController;
+class _MyHomePageState extends State<MyHomePage> {
   bool locationSet = false;
 
   @override
@@ -66,13 +66,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     locationProvider.openDatabase();
     final themeProvider = context.read<ThemeProvider>();
     themeProvider.loadDarkModePrefs();
-    _tabController = TabController(length: 2, vsync: this);
-    _tabController.index = 1;
-    _tabController.addListener(() {
-      if (!locationSet) {
-        _tabController.animateTo(1);
-      }
-    });
   }
 
   @override
@@ -93,8 +86,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: WeatherAppBar(title: widget.title, tabController: _tabController),
-      body: WeatherAppBody(tabController: _tabController),
+      appBar: WeatherAppBar(title: widget.title),
+      drawer: const WeatherDrawer(),
+      body: const WeatherAppBody(),
     );
   }
 }

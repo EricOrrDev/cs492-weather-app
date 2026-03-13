@@ -7,6 +7,7 @@ const sqlCreateTablePath = 'assets/sql/create.sql';
 const sqlInsertPath = 'assets/sql/insert.sql';
 const sqlGetAllPath = 'assets/sql/get_all.sql';
 const sqlDeletePath = 'assets/sql/delete.sql';
+const sqlClearPath = 'assets/sql/clear.sql';
 
 class LocationDatabase {
   final Database _db;
@@ -29,6 +30,13 @@ class LocationDatabase {
 
   void close() async {
     await _db.close();
+  }
+
+  Future<void> clearAllLocations() async {
+    await _db.transaction((txn) async {
+      String query = await rootBundle.loadString(sqlClearPath);
+      await txn.rawDelete(query);
+    });
   }
 
   Future<List<Location>> getLocations() async {

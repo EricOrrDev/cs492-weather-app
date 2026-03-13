@@ -9,7 +9,7 @@ class ForecastsRowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final forecastProvider = context.read<ForecastProvider>();
+    final forecastProvider = context.watch<ForecastProvider>();
     return ListView(
         scrollDirection: Axis.horizontal,
         children: forecastProvider.forecasts

@@ -10,13 +10,32 @@ class LocationProvider extends ChangeNotifier {
 
   LocationDatabase? _db;
 
+  bool useGpsOnStart = false;
+
   void openDatabase() async {
     _db = await LocationDatabase.open();
     await loadSavedLocations();
+    await loadUseGpsOnStart();
     loadSharedZip();
   }
 
+  Future<void> loadUseGpsOnStart() async {
+    final prefs = SharedPreferencesAsync();
+    useGpsOnStart = await prefs.getBool("useGpsOnStart") ?? false;
+  }
+
+  void setUseGpsOnStart(bool value) async {
+    useGpsOnStart = value;
+    final prefs = SharedPreferencesAsync();
+    await prefs.setBool("useGpsOnStart", value);
+    notifyListeners();
+  }
+
   void loadSharedZip() async {
+    if (useGpsOnStart) {
+      setLocationFromGps();
+      return;
+    }
     if (location == null && savedLocations.isNotEmpty) {
       final prefs = SharedPreferencesAsync();
       String? savedZip = await prefs.getString("savedZip");
@@ -36,6 +55,16 @@ class LocationProvider extends ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  void clearAllLocations() async {
+    if (_db != null) {
+      await _db?.clearAllLocations();
+      location = null;
+      savedLocations = [];
+      saveZipToPrefs();
+      loadSavedLocations();
+    }
   }
 
   void deleteLocation(Location loc) async {
