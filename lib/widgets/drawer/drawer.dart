@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:weatherapp/providers/location_provider.dart';
 import 'package:weatherapp/widgets/settings.dart';
+import 'package:weatherapp/widgets/location/add_location_dialog.dart';
 
 class WeatherDrawer extends StatelessWidget {
   const WeatherDrawer({super.key});
@@ -38,6 +39,18 @@ class WeatherDrawer extends StatelessWidget {
               Navigator.of(context).pop(); // Close drawer
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => const SettingsScreen()),
+              );
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.add_location_alt),
+            title: const Text('Add Location'),
+            onTap: () {
+              Navigator.of(context).pop(); // Close drawer
+              showDialog(
+                context: context,
+                builder: (context) => const AddLocationDialog(),
               );
             },
           ),
