@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -22,7 +23,12 @@ class PexelsImage {
       final data = jsonDecode(response.body);
       if (data['photos'] != null && data['photos'].isNotEmpty) {
         return data['photos'][0]['src']['large'];
+      } else {
+        debugPrint('Pexels: No photos found for prompt: $prompt');
       }
+    } else {
+      debugPrint('Pexels API Error: ${response.statusCode} - ${response.reasonPhrase}');
+      debugPrint('Response Body: ${response.body}');
     }
 
     return null;
