@@ -38,7 +38,8 @@ class MyApp extends StatelessWidget {
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.amber, brightness: Brightness.dark),
+            seedColor: const Color.fromARGB(255, 4, 51, 108),
+            brightness: Brightness.dark),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'CS492'),

@@ -110,79 +110,75 @@ class _DetailedForecastState extends State<DetailedForecast> {
     }
 
     return ExcludeSemantics(
-      child: SizedBox(
-        height: 480, // Increased height to accommodate the graph
-        width: double.infinity,
-        child: Card(
-          elevation: 3,
-          margin: const EdgeInsets.all(12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: Stack(
-            children: [
-              // Background image
-              if (_imageUrl != null)
-                Positioned.fill(
-                  child: Image.network(
-                    _imageUrl!,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: Colors.black.withValues(alpha: 0.5),
-                        child: const Center(
-                          child: Icon(Icons.image_not_supported, color: Colors.white54, size: 50),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-      
+      child: Card(
+        elevation: 3,
+        margin: const EdgeInsets.all(12),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Stack(
+          children: [
+            // Background image
+            if (_imageUrl != null)
               Positioned.fill(
-                child: Container(
-                  color: Colors.black.withValues(alpha: 0.5),
+                child: Image.network(
+                  _imageUrl!,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: Colors.black.withValues(alpha: 0.5),
+                      child: const Center(
+                        child: Icon(Icons.image_not_supported, color: Colors.white54, size: 50),
+                      ),
+                    );
+                  },
                 ),
               ),
-              
-              Column(
-                children: [
-                  Expanded(
-                    flex: 3,
-                    child: DetailedForecastText(activeForecast: activeForecast),
-                  ),
-                  const Divider(color: Colors.white24, height: 1),
-                  const Expanded(
-                    flex: 2,
-                    child: HourlyTemperatureGraph(),
-                  ),
-                ],
+    
+            Positioned.fill(
+              child: Container(
+                color: Colors.black.withValues(alpha: 0.5),
               ),
+            ),
+            
+            Column(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: DetailedForecastText(activeForecast: activeForecast),
+                ),
+                const Divider(color: Colors.white24, height: 1),
+                const Expanded(
+                  flex: 2,
+                  child: HourlyTemperatureGraph(),
+                ),
+              ],
+            ),
 
-              if (_loading)
-                const Center(
-                  child: CircularProgressIndicator(color: Colors.white),
-                ),
-              if (!_loading && _imageUrl == null)
-                 const Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 100),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.error_outline, color: Colors.white70, size: 30),
-                        SizedBox(height: 8),
-                        Text(
-                          'Image unavailable\n(Check console for Pexels errors)',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white70, fontSize: 12),
-                        ),
-                      ],
-                    ),
+            if (_loading)
+              const Center(
+                child: CircularProgressIndicator(color: Colors.white),
+              ),
+            if (!_loading && _imageUrl == null)
+               const Center(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 100),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.error_outline, color: Colors.white70, size: 30),
+                      SizedBox(height: 8),
+                      Text(
+                        'Image unavailable\n(Check console for Pexels errors)',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.white70, fontSize: 12),
+                      ),
+                    ],
                   ),
                 ),
-            ],
-          ),
+              ),
+          ],
         ),
       ),
     );
