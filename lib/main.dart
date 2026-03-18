@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
             brightness: Brightness.dark),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'CS492'),
+      home: const MyHomePage(title: 'TryCatch Rain'),
       themeMode: themeProvider.darkMode ? ThemeMode.dark : ThemeMode.light,
     );
   }
