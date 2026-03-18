@@ -15,6 +15,7 @@ class ForecastTileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeProvider themeProvider = context.read<ThemeProvider>();
+    final ForecastProvider forecastProvider = context.watch<ForecastProvider>();
     final theme = Theme.of(context);
 
     final accentColor = forecast.isDaytime
@@ -28,7 +29,7 @@ class ForecastTileWidget extends StatelessWidget {
       label: semanticsString,
       child: InkWell(
         onTap: () {
-          context.read<ForecastProvider>().setActiveForecast(forecast);
+          forecastProvider.setActiveForecast(forecast);
         },
         child: SizedBox(
           width: 160,
@@ -68,7 +69,7 @@ class ForecastTileWidget extends StatelessWidget {
                           SvgPicture.asset(forecast.imagePath,
                               semanticsLabel: forecast.shortForecast),
                           Text(
-                            "${forecast.temperature}°",
+                            "${forecast.getTemperature(forecastProvider.isFahrenheit)}°",
                             style: theme.textTheme.displaySmall?.copyWith(
                               fontWeight: FontWeight.bold,
                             ),

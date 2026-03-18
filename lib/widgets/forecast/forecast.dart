@@ -8,15 +8,17 @@ class ForecastWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          width: double.infinity,
-          height: 200,
-          child: ForecastsRowWidget(),
-        ),
-        ExcludeSemantics(child: DetailedForecast())
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          SizedBox(
+            width: double.infinity,
+            height: 200,
+            child: ForecastsRowWidget(),
+          ),
+          const ExcludeSemantics(child: DetailedForecast()),
+        ],
+      ),
     );
   }
 }

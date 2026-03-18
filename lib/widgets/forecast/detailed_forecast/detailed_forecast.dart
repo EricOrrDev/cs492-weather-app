@@ -5,6 +5,7 @@ import 'package:weatherapp/models/pexels_image.dart';
 import 'package:weatherapp/providers/forecast_provider.dart';
 import 'package:weatherapp/providers/theme_provider.dart';
 import 'package:weatherapp/widgets/forecast/detailed_forecast/detailed_forecast_text.dart';
+import 'package:weatherapp/widgets/forecast/hourly_graph.dart';
 
 class DetailedForecast extends StatefulWidget {
   const DetailedForecast({super.key});
@@ -110,7 +111,7 @@ class _DetailedForecastState extends State<DetailedForecast> {
 
     return ExcludeSemantics(
       child: SizedBox(
-        height: 300,
+        height: 480, // Increased height to accommodate the graph
         width: double.infinity,
         child: Card(
           elevation: 3,
@@ -143,7 +144,21 @@ class _DetailedForecastState extends State<DetailedForecast> {
                   color: Colors.black.withValues(alpha: 0.5),
                 ),
               ),
-              DetailedForecastText(activeForecast: activeForecast),
+              
+              Column(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: DetailedForecastText(activeForecast: activeForecast),
+                  ),
+                  const Divider(color: Colors.white24, height: 1),
+                  const Expanded(
+                    flex: 2,
+                    child: HourlyTemperatureGraph(),
+                  ),
+                ],
+              ),
+
               if (_loading)
                 const Center(
                   child: CircularProgressIndicator(color: Colors.white),

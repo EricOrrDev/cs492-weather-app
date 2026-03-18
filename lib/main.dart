@@ -66,6 +66,8 @@ class _MyHomePageState extends State<MyHomePage> {
     locationProvider.openDatabase();
     final themeProvider = context.read<ThemeProvider>();
     themeProvider.loadDarkModePrefs();
+    final forecastProvider = context.read<ForecastProvider>();
+    forecastProvider.loadSettings();
   }
 
   @override

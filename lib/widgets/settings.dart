@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:weatherapp/providers/forecast_provider.dart';
 import 'package:weatherapp/providers/location_provider.dart';
 import 'package:weatherapp/providers/theme_provider.dart';
 
@@ -10,6 +11,7 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
     final locationProvider = context.watch<LocationProvider>();
+    final forecastProvider = context.watch<ForecastProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -26,6 +28,16 @@ class SettingsScreen extends StatelessWidget {
               themeProvider.setDarkMode(value);
             },
             secondary: const Icon(Icons.brightness_4),
+          ),
+          const Divider(),
+          SwitchListTile(
+            title: const Text('Fahrenheit'),
+            subtitle: const Text('Toggle between Fahrenheit and Celsius'),
+            value: forecastProvider.isFahrenheit,
+            onChanged: (bool value) {
+              forecastProvider.setFahrenheit(value);
+            },
+            secondary: const Icon(Icons.thermostat),
           ),
           const Divider(),
           SwitchListTile(

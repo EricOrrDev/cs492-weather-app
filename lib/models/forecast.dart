@@ -10,6 +10,8 @@ class Forecast {
   String detailedForecast;
   bool isDaytime;
   String imagePath;
+  DateTime startTime;
+  DateTime endTime;
 
   Forecast(
       {required this.temperature,
@@ -19,7 +21,14 @@ class Forecast {
       required this.shortForecast,
       required this.detailedForecast,
       required this.isDaytime,
-      required this.imagePath});
+      required this.imagePath,
+      required this.startTime,
+      required this.endTime});
+
+  int getTemperature(bool isFahrenheit) {
+    if (isFahrenheit) return temperature;
+    return ((temperature - 32) * 5 / 9).round();
+  }
 
   factory Forecast.fromJson(Map<String, dynamic> json) {
     return Forecast(
@@ -30,31 +39,68 @@ class Forecast {
         shortForecast: json["shortForecast"],
         detailedForecast: json["detailedForecast"],
         isDaytime: json["isDaytime"],
+        startTime: DateTime.parse(json["startTime"]),
+        endTime: DateTime.parse(json["endTime"]),
         imagePath:
             getAssetFromDescription(json["shortForecast"], json["isDaytime"]));
   }
 }
 
-Future<List<Forecast>> getForecastsByLocation(double lat, double long) async {
-  String forecastUrl = "https://api.weather.gov/points/$lat,$long";
-  http.Response forecastResponse = await http.get(Uri.parse(forecastUrl));
-  final Map<String, dynamic> forecastJson = jsonDecode(forecastResponse.body);
+class HourlyForecast {
+  final DateTime startTime;
+  final int temperature;
 
-  http.Response forecastDetailResponse =
-      await http.get(Uri.parse(forecastJson["properties"]["forecast"]));
-  final Map<String, dynamic> forecastDetailJson =
-      jsonDecode(forecastDetailResponse.body);
+  HourlyForecast({required this.startTime, required this.temperature});
 
-  List<Forecast> forecasts = [];
-
-  List<dynamic> periods = forecastDetailJson["properties"]["periods"];
-
-  for (int i = 0; i < periods.length; i++) {
-    Map<String, dynamic> f = periods[i];
-    forecasts.add(Forecast.fromJson(f));
+  int getTemperature(bool isFahrenheit) {
+    if (isFahrenheit) return temperature;
+    return ((temperature - 32) * 5 / 9).round();
   }
 
-  return forecasts;
+  factory HourlyForecast.fromJson(Map<String, dynamic> json) {
+    return HourlyForecast(
+      startTime: DateTime.parse(json['startTime']),
+      temperature: json['temperature'],
+    );
+  }
+}
+
+class ForecastResult {
+  final List<Forecast> daily;
+  final List<HourlyForecast> hourly;
+
+  ForecastResult({required this.daily, required this.hourly});
+}
+
+Future<ForecastResult> getForecastsByLocation(double lat, double long) async {
+  String pointsUrl = "https://api.weather.gov/points/$lat,$long";
+  http.Response pointsResponse = await http.get(Uri.parse(pointsUrl));
+  final Map<String, dynamic> pointsJson = jsonDecode(pointsResponse.body);
+
+  final String forecastUrl = pointsJson["properties"]["forecast"];
+  final String forecastHourlyUrl = pointsJson["properties"]["forecastHourly"];
+
+  final responses = await Future.wait([
+    http.get(Uri.parse(forecastUrl)),
+    http.get(Uri.parse(forecastHourlyUrl)),
+  ]);
+
+  final Map<String, dynamic> forecastDetailJson = jsonDecode(responses[0].body);
+  final Map<String, dynamic> forecastHourlyJson = jsonDecode(responses[1].body);
+
+  List<Forecast> dailyForecasts = [];
+  List<dynamic> dailyPeriods = forecastDetailJson["properties"]["periods"];
+  for (var p in dailyPeriods) {
+    dailyForecasts.add(Forecast.fromJson(p));
+  }
+
+  List<HourlyForecast> hourlyForecasts = [];
+  List<dynamic> hourlyPeriods = forecastHourlyJson["properties"]["periods"];
+  for (var p in hourlyPeriods) {
+    hourlyForecasts.add(HourlyForecast.fromJson(p));
+  }
+
+  return ForecastResult(daily: dailyForecasts, hourly: hourlyForecasts);
 }
 
 String getAssetFromDescription(String description, bool isDaytime){

@@ -40,12 +40,12 @@ class _AddLocationDialogState extends State<AddLocationDialog> {
       ),
       actions: [
         TextButton(
-          child: const Text('Cancel'),
           onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
         ),
         TextButton(
-          child: const Text('Add'),
           onPressed: _submit,
+          child: const Text('Add'),
         ),
       ],
     );
