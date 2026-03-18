@@ -130,11 +130,6 @@ class _TemperaturePainter extends CustomPainter {
       ..color = Colors.blue
       ..style = PaintingStyle.fill;
 
-    final dotOutlinePaint = Paint()
-      ..color = Colors.white
-      ..strokeWidth = 2
-      ..style = PaintingStyle.stroke;
-
     final textPainter = TextPainter(textDirection: ui.TextDirection.ltr);
 
     // Denser labeling for 12h, sparser for 24h
@@ -143,11 +138,9 @@ class _TemperaturePainter extends CustomPainter {
     for (var i = 0; i < points.length; i++) {
       // Draw dot
       canvas.drawCircle(points[i], 4, dotPaint);
-      canvas.drawCircle(points[i], 4, dotOutlinePaint);
 
       // Draw Time label
-      if (i % labelInterval == 0) {
-        final time = DateFormat('h a').format(forecasts[i].startTime);
+      if (i % labelInterval == 0) {        final time = DateFormat('h a').format(forecasts[i].startTime);
         textPainter.text = TextSpan(
           text: time,
           style: TextStyle(color: Colors.white70, fontSize: 9),
