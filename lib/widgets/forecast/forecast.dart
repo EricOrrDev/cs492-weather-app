@@ -18,6 +18,7 @@ class ForecastWidget extends StatelessWidget {
         const Expanded(
           child: ExcludeSemantics(child: DetailedForecast()),
         ),
+        const SizedBox(height: 40),
       ],
     );
   }
