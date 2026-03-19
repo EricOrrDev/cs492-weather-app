@@ -22,10 +22,10 @@ class WeatherDrawer extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.wb_sunny, size: 48),
+                  Icon(Icons.wb_cloudy, size: 48),
                   SizedBox(height: 8),
                   Text(
-                    'Weather App',
+                    'TryCatch Rain',
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -82,13 +82,16 @@ class WeatherDrawer extends StatelessWidget {
                     itemCount: locationProvider.savedLocations.length,
                     itemBuilder: (context, index) {
                       final location = locationProvider.savedLocations[index];
-                      final isSelected = locationProvider.location?.zip == location.zip;
-                      
+                      final isSelected =
+                          locationProvider.location?.zip == location.zip;
+
                       return ListTile(
                         title: Text("${location.city}, ${location.state}"),
                         subtitle: Text(location.zip),
                         selected: isSelected,
-                        trailing: isSelected ? const Icon(Icons.check, color: Colors.green) : null,
+                        trailing: isSelected
+                            ? const Icon(Icons.check, color: Colors.green)
+                            : null,
                         onTap: () {
                           locationProvider.setLocation(location);
                           Navigator.of(context).pop(); // Close drawer
