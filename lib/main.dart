@@ -30,7 +30,8 @@ class MyApp extends StatelessWidget {
     final themeProvider = context.watch<ThemeProvider>();
     return MaterialApp(
       showSemanticsDebugger: false,
-      title: 'CS492',
+      debugShowCheckedModeBanner: false,
+      title: 'TryCatch Rain',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
             seedColor: Colors.amber, brightness: Brightness.light),
