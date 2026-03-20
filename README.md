@@ -64,7 +64,7 @@ To run this application locally, follow these steps:
 ## Demonstration Video
 
 Watch the full walkthrough of the application's features and implementation here:
-[**WeatherWise Demonstration Video (Part 3)**](LINK_TO_YOUR_VIDEO_HERE)
+[**WeatherWise Demonstration Video (Part 3)**](https://youtu.be/EVFiizGdELo)
 
 ---
 
